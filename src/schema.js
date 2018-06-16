@@ -149,7 +149,7 @@ const baseSchema = new Schema({
 const schema = new Schema({
     nodes: baseSchema.spec.nodes.append(tableNodes({
         tableGroup: "block",
-        cellContent: "block+",
+        cellContent: "inline*",
     })),
     marks: baseSchema.spec.marks,
 });

@@ -19,13 +19,9 @@ function same(text, doc) {
 }
 
 describe("markdown", () => {
-    it.only("parses a table", () =>
-       same("| Name | Age |\n| ---- | --- |\n| Bob  | 42  |\n",
+    it("parses a table", () =>
+       same("| Name | Age |\n| --- | --- |\n| Bob | 42 |\n",
             doc(table(tr(th("Name"), th("Age")), tr(td("Bob"), td("42"))))))
-
-    it("serializes tables", () =>
-            serialize(doc(table(tr(th("Name"), th("Age")), tr(td("Bob"), td("42")))),
-                     "| Name | Age |\n| --- | --- |\n| Bob | 42 |\n"))
 
   it("parses a paragraph", () =>
      same("hello!",

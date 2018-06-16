@@ -68,17 +68,15 @@ class MarkdownParseState {
 
   // : (NodeType, ?Object)
   // Wrap subsequent content in a node of the given type.
-    openNode(type, attrs) {
-        console.log("open", type.name);
+  openNode(type, attrs) {
     this.stack.push({type: type, attrs: attrs, content: []})
   }
 
   // : () → ?Node
   // Close and return the node that is currently on top of the stack.
-    closeNode() {
+  closeNode() {
     if (this.marks.length) this.marks = Mark.none
-        let info = this.stack.pop()
-        console.log("close", info.type.name);
+    let info = this.stack.pop()
     return this.addNode(info.type, info.attrs, info.content)
   }
 }
@@ -146,7 +144,9 @@ function tokenHandlers(schema, tokens) {
   }
 
   handlers.text = (state, tok) => state.addText(tok.content)
-  handlers.inline = (state, tok) => state.parseTokens(tok.children)
+    handlers.inline = (state, tok) => {
+      state.parseTokens(tok.children)
+    }
   handlers.softbreak = state => state.addText("\n")
 
   return handlers
@@ -213,7 +213,6 @@ export class MarkdownParser {
       let parsed = this.tokenizer.parse(text, {})
       state.parseTokens(parsed)
       do { doc = state.closeNode() } while (state.stack.length)
-      console.log(doc.toString())
     return doc
   }
 }
