@@ -12,5 +12,8 @@ module.exports = builders(schema, {
   pre: {nodeType: "code_block"},
   a: {markType: "link", href: "foo"},
   br: {nodeType: "hard_break"},
-  img: {nodeType: "image", src: "img.png", alt: "x"}
+    img: {nodeType: "image", src: "img.png", alt: "x"},
+    tr: {nodeType: "table_row"},
+    td: {nodeType: "table_cell"},
+    th: {nodeType: "table_header"}
 })

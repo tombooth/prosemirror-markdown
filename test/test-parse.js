@@ -3,7 +3,7 @@ const ist = require("ist")
 
 const {schema, defaultMarkdownParser, defaultMarkdownSerializer} = require("../dist")
 
-const {doc, blockquote, h1, h2, p, hr, li, ol, ul, pre, em, strong, code, a, br, img} = require("./build")
+const {doc, blockquote, h1, h2, p, hr, li, ol, ul, pre, em, strong, code, a, br, img, table, tr, th, td} = require("./build")
 
 function parse(text, doc) {
   ist(defaultMarkdownParser.parse(text), doc, eq)
@@ -19,6 +19,14 @@ function same(text, doc) {
 }
 
 describe("markdown", () => {
+    it.only("parses a table", () =>
+       same("| Name | Age |\n| ---- | --- |\n| Bob  | 42  |\n",
+            doc(table(tr(th("Name"), th("Age")), tr(td("Bob"), td("42"))))))
+
+    it("serializes tables", () =>
+            serialize(doc(table(tr(th("Name"), th("Age")), tr(td("Bob"), td("42")))),
+                     "| Name | Age |\n| --- | --- |\n| Bob | 42 |\n"))
+
   it("parses a paragraph", () =>
      same("hello!",
           doc(p("hello!"))))

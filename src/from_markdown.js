@@ -68,15 +68,17 @@ class MarkdownParseState {
 
   // : (NodeType, ?Object)
   // Wrap subsequent content in a node of the given type.
-  openNode(type, attrs) {
+    openNode(type, attrs) {
+        console.log("open", type.name);
     this.stack.push({type: type, attrs: attrs, content: []})
   }
 
   // : () → ?Node
   // Close and return the node that is currently on top of the stack.
-  closeNode() {
+    closeNode() {
     if (this.marks.length) this.marks = Mark.none
-    let info = this.stack.pop()
+        let info = this.stack.pop()
+        console.log("close", info.type.name);
     return this.addNode(info.type, info.attrs, info.content)
   }
 }
@@ -208,8 +210,10 @@ export class MarkdownParser {
   // rules.
   parse(text) {
     let state = new MarkdownParseState(this.schema, this.tokenHandlers), doc
-    state.parseTokens(this.tokenizer.parse(text, {}))
-    do { doc = state.closeNode() } while (state.stack.length)
+      let parsed = this.tokenizer.parse(text, {})
+      state.parseTokens(parsed)
+      do { doc = state.closeNode() } while (state.stack.length)
+      console.log(doc.toString())
     return doc
   }
 }
@@ -217,7 +221,7 @@ export class MarkdownParser {
 // :: MarkdownParser
 // A parser parsing unextended [CommonMark](http://commonmark.org/),
 // without inline HTML, and producing a document in the basic schema.
-export const defaultMarkdownParser = new MarkdownParser(schema, markdownit("commonmark", {html: false}), {
+export const defaultMarkdownParser = new MarkdownParser(schema, markdownit("commonmark", {html: false}).enable('table'), {
   blockquote: {block: "blockquote"},
   paragraph: {block: "paragraph"},
   list_item: {block: "list_item"},
@@ -240,5 +244,12 @@ export const defaultMarkdownParser = new MarkdownParser(schema, markdownit("comm
     href: tok.attrGet("href"),
     title: tok.attrGet("title") || null
   })},
-  code_inline: {mark: "code"}
+    code_inline: {mark: "code"},
+
+    table: {block: "table"},
+    thead: {ignore: true},
+    tbody: {ignore: true},
+    tr: {block: "table_row"},
+    th: {block: "table_header"},
+    td: {block: "table_cell"},
 })

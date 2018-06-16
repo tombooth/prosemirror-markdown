@@ -45,6 +45,10 @@ export class MarkdownSerializer {
 // :: MarkdownSerializer
 // A serializer for the [basic schema](#schema).
 export const defaultMarkdownSerializer = new MarkdownSerializer({
+    table(state, node) {
+        state.renderTable(node)
+    },
+
   blockquote(state, node) {
     state.wrapBlock("> ", null, node, () => state.renderContent(node))
   },
@@ -311,6 +315,32 @@ export class MarkdownSerializerState {
     })
     this.inTightList = prevTight
   }
+
+    renderTableRow(node) {
+        this.write("|")
+        node.forEach((cell) => {
+            this.write(" ")
+            this.renderInline(cell)
+            this.write(" |")
+        })
+        this.write("\n")
+    }
+
+    renderTableHeader(node) {
+        this.renderTableRow(node)
+        this.write("|")
+        node.forEach(() => {
+            this.write(" --- |")
+        })
+        this.write("\n")
+    }
+
+    renderTable(node) {
+        node.forEach((child, _, i) => {
+            if (i == 0) this.renderTableHeader(child)
+            else this.renderTableRow(child)
+        })
+    }
 
   // :: (string, ?bool) → string
   // Escape the given string so that it can safely appear in Markdown

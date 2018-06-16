@@ -1,7 +1,8 @@
 import {Schema} from "prosemirror-model"
+import {tableNodes} from "prosemirror-tables"
 
 // ::Schema Document schema for the data model used by CommonMark.
-export const schema = new Schema({
+const baseSchema = new Schema({
   nodes: {
     doc: {
       content: "block+"
@@ -144,3 +145,13 @@ export const schema = new Schema({
     }
   }
 })
+
+const schema = new Schema({
+    nodes: baseSchema.spec.nodes.append(tableNodes({
+        tableGroup: "block",
+        cellContent: "block+",
+    })),
+    marks: baseSchema.spec.marks,
+});
+
+export {schema}
